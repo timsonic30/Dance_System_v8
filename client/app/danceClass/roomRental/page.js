@@ -17,7 +17,7 @@ export default function ClassCreate() {
   }, []);
 
   return (
-    <div>
+    <div className="bg-zinc-700 text-white">
         <Calendar/>
         <TimePicker/>
     </div>
