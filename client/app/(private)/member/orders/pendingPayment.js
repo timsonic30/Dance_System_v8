@@ -1,4 +1,23 @@
 export default function PendingPayment({ data }) {
+
+  const handleDeleteTransactionRec = async (id) => {
+    try {
+      // 發送刪除請求
+      const response = await fetch(`http://localhost:3030/danceclass/transactionDelete/${id}`, 
+        { method: "DELETE" });  // 使用 DELETE 方法 
+      const resData = await response.json();
+      console.log("刪除結果:", resData);  // 確認刪除結果
+      if (resData.response !== "ok") {
+        console.error("刪除失敗:", resData);
+        return;
+      }else{
+        console.log("刪除成功:", resData);
+      // 刷新頁面 (重新抓取數據)      
+      window.location.reload(); }
+    } catch (err) {
+      console.error("刪除失敗:", err);
+    } };
+
   const renderHtml = () => {
     if (!data || !Array.isArray(data)) {
       console.log("數據無效或為空");
