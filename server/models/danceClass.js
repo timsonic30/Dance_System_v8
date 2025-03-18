@@ -40,8 +40,20 @@ const danceClassSchema = new Schema({
   status: { type: String, enum: ["Status", "招收中", "已取消", "額滿"] },
   level: { type: String, enum: ["Level", "beginner", "Open style"] },
   date: { type: Date },
-  startTime: { type: String },
-  endTime: { type: String },
+  startTime: { type: String , enum: [
+    "09:00", "09:30", "10:00", "10:30", "11:00", "11:30", 
+    "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", 
+    "15:00", "15:30", "16:00", "16:30", "17:00", "17:30", 
+    "18:00", "18:30", "19:00", "19:30", "20:00", "20:30", 
+    "21:00", "21:30", "22:00", "22:30", "23:00"
+  ]},
+  endTime: { type: String, enum: [
+    "09:00", "09:30", "10:00", "10:30", "11:00", "11:30", 
+    "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", 
+    "15:00", "15:30", "16:00", "16:30", "17:00", "17:30", 
+    "18:00", "18:30", "19:00", "19:30", "20:00", "20:30", 
+    "21:00", "21:30", "22:00", "22:30", "23:00"
+  ] },
   description: String,
   price: { type: Number },
   lessonDuration: [{ type: Date }],
@@ -50,6 +62,26 @@ const danceClassSchema = new Schema({
   img: { type: String },
   createdAt: { type: Date, default: Date.now },
 });
+
+// 添加 pre-save 中間件
+danceClassSchema.pre("save", function (next) {
+  const { startTime, endTime } = this;
+
+  // 將時間轉換為分鐘進行比較
+  const timeToMinutes = (time) => {
+    const [hours, minutes] = time.split(":").map(Number);
+    return hours * 60 + minutes;
+  };
+
+  if (timeToMinutes(endTime) < timeToMinutes(startTime)) {
+    return next(
+      new Error("請查看課程開始時間和結束時間，結束時間應該在開始時間之後")
+    );
+  }
+
+  next(); // 驗證通過，繼續保存
+});
+
 const DanceClass = mongoose.model("DanceClass", danceClassSchema);
 
 module.exports = DanceClass;

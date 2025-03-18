@@ -28,7 +28,7 @@ const MemberSchema = new Schema({
   },
   gender: {
     type: String,
-    enum: ["F", "M"],
+    enum: ["F", "M",""],
     default: "",
   },
   dateOfBirth: {
